@@ -18,14 +18,19 @@ KERNEL_LFLAGS=-nostdlib -lgcc
 
 KERNEL_OBJS=kernel/kernel.o \
 			kernel/util.o \
-			kernel/vga.o
+			kernel/vga.o \
+			kernel/kbd.o \
+			kernel/idt.o
 
-kernel.bin: boot.o linker.ld $(KERNEL_OBJS)
-	i686-elf-gcc -T linker.ld -o $@ boot.o $(KERNEL_OBJS) $(KERNEL_LFLAGS) $(KERNEL_CFLAGS)
+kernel.bin: boot.o linker.ld kernel/pic.o $(KERNEL_OBJS)
+	i686-elf-gcc -T linker.ld -o $@ boot.o kernel/pic.o $(KERNEL_OBJS) $(KERNEL_LFLAGS) $(KERNEL_CFLAGS)
 	grub-file --is-x86-multiboot $@
 
 kernel/%.o: kernel/%.c
 	i686-elf-gcc -c $^ -o $@ -std=gnu99 $(KERNEL_CFLAGS)
+
+kernel/pic.o: kernel/pic.s
+	i686-elf-as $^ -o $@
 
 boot.o: boot.s
 	i686-elf-as boot.s -o $@
@@ -35,5 +40,6 @@ clean:
 	$(RM) os.iso
 	$(RM) kernel.bin
 	$(RM) boot.o
+	$(RM) kernel/idt.o
 	$(RM) $(KERNEL_OBJS)
 
