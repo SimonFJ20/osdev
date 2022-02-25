@@ -1,0 +1,4 @@
+kernel.bin
+os.iso
+*.o
+target/
