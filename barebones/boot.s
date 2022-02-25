@@ -26,9 +26,10 @@ stack_top:
 .type _start, @function
 _start:
     mov $stack_top, %esp # set sp
-    call kernel_main # defined in c
-    cli # clear interrupts
-1:  hlt # "wait" for disables interrupts
+    call kmain
+    # loop forever
+    cli
+1:  hlt
     jmp 1b
 
 .size _start, . - _start
