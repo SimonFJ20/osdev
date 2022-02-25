@@ -24,29 +24,40 @@ void term_putentryat(struct term* t, char c, uint8_t color, size_t x, size_t y)
     t->buffer[y * VGA_WIDTH + x] = vga_entry(c, color);
 }
 
+void term_linefeed(struct term* t)
+{
+    t->column = 0;
+    t->row++;
+
+    if (t->row >= VGA_HEIGHT)
+    {
+        for (size_t y = 0; y < VGA_HEIGHT - 1; y++)
+            for (size_t x = 0; x < VGA_WIDTH; x++)
+                t->buffer[y * VGA_WIDTH + x] = t->buffer[(y + 1) * VGA_WIDTH + x];
+        for (size_t x = 0; x < VGA_WIDTH; x++)
+            t->buffer[VGA_WIDTH * (VGA_HEIGHT - 1) + x] = vga_entry(' ', t->color);
+        t->row--;
+    }
+}
+
 void term_putchar(struct term* t, char c)
 {
     switch (c)
     {
         case '\n':
-            t->column = 0;
-            t->row++;
-            return;
+            return term_linefeed(t);
         case '\t':
             t->column += 4;
             if (t->column >= VGA_WIDTH)
-            {
-                t->column = 0;
-                t->row++;
-            }
+                term_linefeed(t);
+            return;
     }
 
     term_putentryat(t, c, t->color, t->column, t->row);
     t->column++;
     if (t->column == VGA_WIDTH)
     {
-        t->column = 0;
-        t->row++;
+        term_linefeed(t);
         if (t->row == VGA_HEIGHT)
             t->row = 0;
     }

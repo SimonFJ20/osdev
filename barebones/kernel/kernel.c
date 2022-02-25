@@ -17,7 +17,9 @@ void kmain(void)
 {
     struct term* t = {0};
     term_init(t);
-    term_writestr(t, "windows bad, linux bloat, hello from new thing\nps. russia do be invading ukraine\n\nno.\n");
+    term_writestr(t, "hello world\n");
+    term_color(t, vga_entry_color(VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK));
+    term_writestr(t, "hacking...\n");
 }
 
  

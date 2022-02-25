@@ -49,6 +49,7 @@ struct term
 void term_init(struct term* t);
 void term_color(struct term* t, uint8_t color);
 void term_putentryat(struct term* t, char c, uint8_t color, size_t x, size_t y);
+void term_linefeed(struct term* t);
 void term_putchar(struct term* t, char c);
 void term_write(struct term* t, const char* str, size_t len);
 void term_writestr(struct term* t, const char* str);
