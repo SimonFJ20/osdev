@@ -18,7 +18,6 @@ void kmain(void)
     struct term* t = {0};
     term_init(t);
     term_writestr(t, "windows bad, linux bloat, hello from new thing\nps. russia do be invading ukraine\n\nno.\n");
-    sut(t);
 }
 
  
