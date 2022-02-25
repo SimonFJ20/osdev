@@ -15,9 +15,10 @@ os.iso: kernel.bin
 
 KERNEL_CFLAGS=-Ikernel -O2 -Wall -Wextra -ffreestanding
 KERNEL_LFLAGS=-nostdlib -lgcc
+
 KERNEL_OBJS=kernel/kernel.o \
 			kernel/util.o \
-			kernel/vgaterm.o
+			kernel/vga.o
 
 kernel.bin: boot.o linker.ld $(KERNEL_OBJS)
 	i686-elf-gcc -T linker.ld -o $@ boot.o $(KERNEL_OBJS) $(KERNEL_LFLAGS) $(KERNEL_CFLAGS)
