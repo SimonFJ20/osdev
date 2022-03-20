@@ -1,0 +1,7 @@
+-Ikernel
+-O2
+-Wall
+-Wextra
+-ffreestanding
+-nostdlib
+-lgcc

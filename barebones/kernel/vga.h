@@ -34,13 +34,12 @@ static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg)
 
 static inline uint16_t vga_entry(unsigned char uc, uint8_t color)
 {
-    return (uint16_t) uc | (uint16_t) color << 8;
+    return (uint16_t)uc | (uint16_t)color << 8;
 }
 
 #define VGA_BUFFER_ADDRESS 0xB8000
 
-struct term
-{
+struct term {
     size_t row, column;
     uint8_t color;
     uint16_t* buffer;
@@ -53,5 +52,7 @@ void term_linefeed(struct term* t);
 void term_putchar(struct term* t, char c);
 void term_write(struct term* t, const char* str, size_t len);
 void term_writestr(struct term* t, const char* str);
+void term_writeint(struct term* t, int32_t value);
+void term_writehex(struct term* t, uint32_t value);
 
 #endif
