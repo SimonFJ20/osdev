@@ -23,9 +23,8 @@ void kmain(void)
 		.handler = keyboard_handler,
 	};
 
-	const char *str = "my first kernel with keyboard support";
 	clear_screen();
-	kprint(str);
+	kprint("Initializing kernel");
 	kprint_newline();
 	kprint_newline();
 
