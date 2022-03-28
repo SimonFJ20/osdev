@@ -1,0 +1,8 @@
+-m32
+-nostdlib
+-nolibc
+-ffreestanding
+-fno-stack-protector
+-Wall
+-Wextra
+-Werror
