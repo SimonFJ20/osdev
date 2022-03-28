@@ -8,7 +8,7 @@ void term_print(struct VGATerm* term, const char* str)
     }
 }
 
-void term_insert_line(struct VGATerm* term)
+void term_newline(struct VGATerm* term)
 {
     unsigned int line_size = BYTES_FOR_EACH_ELEMENT * COLUMNS_IN_LINE;
     term->location += (line_size - term->location % (line_size));

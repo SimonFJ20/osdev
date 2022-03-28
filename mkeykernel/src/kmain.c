@@ -19,8 +19,7 @@ void keyboard_handler(char keycode, struct MyKBEventHandlerArgs* args)
 {
     struct VGATerm* term = args->term;
     if (keycode == ENTER_KEY_CODE)
-        return term_insert_line(term);
-
+        return term_newline(term);
     term->buffer[term->location++] = keyboard_map[(unsigned char)keycode];
     term->buffer[term->location++] = 0x07;
 }
@@ -43,8 +42,8 @@ void kmain(void)
 
     term_clear_screen(&t);
     term_print(&t, "Initializing kernel");
-    term_insert_line(&t);
-    term_insert_line(&t);
+    term_newline(&t);
+    term_newline(&t);
 
     idt_init(IDT);
     kb_init((struct KBEventHandler*)&kbHandler);

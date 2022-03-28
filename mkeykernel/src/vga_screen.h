@@ -13,7 +13,7 @@ struct VGATerm {
 };
 
 void term_print(struct VGATerm* term, const char *str);
-void term_insert_line(struct VGATerm* term);
+void term_newline(struct VGATerm* term);
 void term_clear_screen(struct VGATerm* term);
 
 #endif
