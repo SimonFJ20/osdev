@@ -25,12 +25,10 @@ stack_top:
 .global _start
 .type _start, @function
 _start:
-    mov $stack_top, %esp # set sp
-    call kmain
-    # loop forever
     cli
-1:  hlt
-    jmp 1b
+    mov $stack_top, %esp
+    call kmain
+    hlt
 
 .size _start, . - _start
 
