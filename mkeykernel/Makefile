@@ -1,5 +1,11 @@
 
-CFLAGS = -m32 -nostdlib -nolibc -ffreestanding -fno-stack-protector -Wall -Wextra -Werror
+# LD = ld
+# CC = gcc
+
+LD = i686-elf-ld
+CC = i686-elf-gcc
+
+CFLAGS = -O2 -m32 -nostdlib -nolibc -ffreestanding -fno-stack-protector -Wall -Wextra -Werror
 
 OBJECTS = \
 	kernel.o \
@@ -14,10 +20,10 @@ run: kernel
 	qemu-system-i386 -kernel kernel
 
 kernel: $(OBJECTS) link.ld
-	ld -m elf_i386 -T link.ld -o kernel $(OBJECTS)
+	$(LD) -m elf_i386 -T link.ld -o kernel $(OBJECTS)
 
 %.o: %.c
-	gcc -c $^ -o $@ $(CFLAGS)
+	$(CC) -c $^ -o $@ $(CFLAGS)
 
 %.o: %.asm
 	nasm -f elf32 $^ -o $@
