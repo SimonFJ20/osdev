@@ -1,6 +1,6 @@
 #include "port.h"
 
-asm(
+__asm__ (
     ".global read_port\n"
     "read_port:\n"
     "    mov 4(%esp), %edx\n"
@@ -8,7 +8,7 @@ asm(
     "    ret\n"
 );
 
-asm(
+__asm__ (
     ".global write_port\n"
     "write_port:\n"
     "    mov 4(%esp), %edx\n"

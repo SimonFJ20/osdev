@@ -5,7 +5,7 @@
 LD = i686-elf-ld
 CC = i686-elf-gcc
 
-CFLAGS = -O2 -m32 -nostdlib -nolibc -ffreestanding -fno-stack-protector -Wall -Wextra -Werror
+CFLAGS = -O2 -std=c17 -m32 -nostdlib -nolibc -ffreestanding -fno-stack-protector -Wall -Wextra -Werror
 
 OFILES = \
     kernel.o \
@@ -14,6 +14,7 @@ OFILES = \
     port.o \
     vga_screen.o \
 
+HEADERS = $(wildcard src/*.h)
 OBJECTS = $(patsubst %, src/%, $(OFILES))
 
 all: kernel
@@ -24,8 +25,8 @@ run: kernel
 kernel: $(OBJECTS) link.ld
 	$(LD) -m elf_i386 -T link.ld -o kernel $(OBJECTS)
 
-%.o: %.c
-	$(CC) -c $^ -o $@ $(CFLAGS)
+%.o: %.c $(HEADERS)
+	$(CC) -c $< -o $@ $(CFLAGS)
 
 %.o: %.asm
 	nasm -f elf32 $^ -o $@

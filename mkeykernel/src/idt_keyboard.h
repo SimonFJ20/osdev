@@ -25,8 +25,11 @@ struct IDT_entry {
 void load_idt(unsigned long *idt_ptr);
 void idt_init(struct IDT_entry* IDT);
 
+struct KBEventHandlerArgs {};
+
 struct KBEventHandler {
-    void (*handler)(char keycode);
+    void (*handler)(char keycode, struct KBEventHandlerArgs* args);
+    struct KBEventHandlerArgs args;
 };
 
 extern unsigned char keyboard_map[128];

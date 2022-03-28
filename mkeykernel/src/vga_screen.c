@@ -1,31 +1,25 @@
 #include "vga_screen.h"
 
-/* current cursor location */
-unsigned int current_loc = 0;
-/* video memory begins at address 0xb8000 */
-char *vidptr = (char*)0xb8000;
-
-void kprint(const char *str)
+void term_print(struct VGATerm* term, const char* str)
 {
-    unsigned int i = 0;
-    while (str[i] != '\0') {
-        vidptr[current_loc++] = str[i++];
-        vidptr[current_loc++] = 0x07;
+    for (unsigned int i = 0; str[i] != '\0'; i++) {
+        term->buffer[term->location++] = str[i];
+        term->buffer[term->location++] = 0x07;
     }
 }
 
-void kprint_newline(void)
+void term_insert_line(struct VGATerm* term)
 {
     unsigned int line_size = BYTES_FOR_EACH_ELEMENT * COLUMNS_IN_LINE;
-    current_loc = current_loc + (line_size - current_loc % (line_size));
+    term->location += (line_size - term->location % (line_size));
 }
 
-void clear_screen(void)
+void term_clear_screen(struct VGATerm* term)
 {
     unsigned int i = 0;
     while (i < SCREENSIZE) {
-        vidptr[i++] = ' ';
-        vidptr[i++] = 0x07;
+        term->buffer[i++] = ' ';
+        term->buffer[i++] = 0x07;
     }
 }
 

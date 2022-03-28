@@ -1,7 +1,7 @@
 #include "idt_keyboard.h"
 #include "port.h"
 
-asm(
+__asm__ (
     "load_idt:\n"
     "    mov 4(%esp), %edx\n"
     "    lidt (%edx)\n"
@@ -63,7 +63,7 @@ void kb_init(struct KBEventHandler* handler)
     write_port(PIC1_DATA, KB_ENABLE_ONLY_IRQ1_FLAGS);
 }
 
-asm(
+__asm__ (
     "kb_event_interrupt:\n"
     "    call kb_event_interrupt_handler\n"
     "    iret\n");
@@ -82,6 +82,6 @@ void kb_event_interrupt_handler(void)
         keycode = read_port(KB_DATA_PORT);
         if (keycode < 0)
             return;
-        kbEventHandler->handler(keycode);
+        kbEventHandler->handler(keycode, &kbEventHandler->args);
     }
 }

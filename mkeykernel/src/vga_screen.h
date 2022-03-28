@@ -7,13 +7,13 @@
 #define BYTES_FOR_EACH_ELEMENT 2
 #define SCREENSIZE BYTES_FOR_EACH_ELEMENT * COLUMNS_IN_LINE * LINES
 
-extern unsigned int current_loc;
-extern char *vidptr;
+struct VGATerm {
+    int location;
+    char* buffer;
+};
 
-void kprint(const char *str);
-
-void kprint_newline(void);
-
-void clear_screen(void);
+void term_print(struct VGATerm* term, const char *str);
+void term_insert_line(struct VGATerm* term);
+void term_clear_screen(struct VGATerm* term);
 
 #endif

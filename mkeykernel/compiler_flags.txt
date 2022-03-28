@@ -1,4 +1,5 @@
 -m32
+-std=c17
 -nostdlib
 -nolibc
 -ffreestanding
