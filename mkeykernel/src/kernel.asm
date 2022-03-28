@@ -11,10 +11,10 @@ global start
 extern kmain
 
 start:
-	cli ; block interrupts
-	mov esp, stack_space
-	call kmain
-	hlt ; halt the CPU
+    cli ; block interrupts
+    mov esp, stack_space
+    call kmain
+    hlt ; halt the CPU
 
 section .bss
 resb 8192; 8KB for stack

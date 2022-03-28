@@ -8,28 +8,28 @@
 
 void keyboard_handler(char keycode)
 {
-	if(keycode == ENTER_KEY_CODE)
-		return kprint_newline();
+    if(keycode == ENTER_KEY_CODE)
+        return kprint_newline();
 
-	vidptr[current_loc++] = keyboard_map[(unsigned char) keycode];
-	vidptr[current_loc++] = 0x07;
+    vidptr[current_loc++] = keyboard_map[(unsigned char) keycode];
+    vidptr[current_loc++] = 0x07;
 }
 
 void kmain(void)
 {
-	struct IDT_entry IDT[IDT_SIZE];
+    struct IDT_entry IDT[IDT_SIZE];
 
-	struct KBEventHandler kbEventHandler = {
-		.handler = keyboard_handler,
-	};
+    struct KBEventHandler kbEventHandler = {
+        .handler = keyboard_handler,
+    };
 
-	clear_screen();
-	kprint("Initializing kernel");
-	kprint_newline();
-	kprint_newline();
+    clear_screen();
+    kprint("Initializing kernel");
+    kprint_newline();
+    kprint_newline();
 
-	idt_init(IDT);
-	kb_init(&kbEventHandler);
+    idt_init(IDT);
+    kb_init(&kbEventHandler);
 
-	while(1);
+    while(1);
 }

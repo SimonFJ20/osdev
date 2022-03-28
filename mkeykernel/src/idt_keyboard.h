@@ -1,8 +1,6 @@
 #ifndef IDT_KEYBOARD_H
 #define IDT_KEYBOARD_H
 
-
-
 #define PIC1_COMMAND 0x20
 #define PIC2_COMMAND 0xA0
 #define PIC1_DATA 0x21
@@ -17,18 +15,18 @@
 #define ENTER_KEY_CODE 0x1C
 
 struct IDT_entry {
-	unsigned short int offset_lowerbits;
-	unsigned short int selector;
-	unsigned char zero;
-	unsigned char type_attr;
-	unsigned short int offset_higherbits;
+    unsigned short int offset_lowerbits;
+    unsigned short int selector;
+    unsigned char zero;
+    unsigned char type_attr;
+    unsigned short int offset_higherbits;
 };
 
 void load_idt(unsigned long *idt_ptr);
 void idt_init(struct IDT_entry* IDT);
 
 struct KBEventHandler {
-	void (*handler)(char keycode);
+    void (*handler)(char keycode);
 };
 
 extern unsigned char keyboard_map[128];

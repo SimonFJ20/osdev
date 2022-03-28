@@ -7,12 +7,14 @@ CC = i686-elf-gcc
 
 CFLAGS = -O2 -m32 -nostdlib -nolibc -ffreestanding -fno-stack-protector -Wall -Wextra -Werror
 
-OBJECTS = \
-	src/kernel.o \
-	src/kmain.o \
-	src/idt_keyboard.o \
-	src/port.o \
-	src/vga_screen.o \
+OFILES = \
+    kernel.o \
+    kmain.o \
+    idt_keyboard.o \
+    port.o \
+    vga_screen.o \
+
+OBJECTS = $(patsubst %, src/%, $(OFILES))
 
 all: kernel
 
