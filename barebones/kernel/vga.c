@@ -72,14 +72,14 @@ void term_writestr(struct term* t, const char* str)
 
 void term_writeint(struct term* t, int32_t value)
 {
-    char result[I32_DEC_STR_LEN] = {0};
+    char result[I32_DEC_STR_LEN] = { 0 };
     i32_dec_str(result, value);
     return term_writestr(t, result);
 }
 
 void term_writehex(struct term* t, uint32_t value)
 {
-    char result[U32_HEX_STR_LEN] = {0};
+    char result[U32_HEX_STR_LEN] = { 0 };
     u32_hex_str(result, value);
     return term_writestr(t, result);
 }

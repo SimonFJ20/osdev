@@ -72,8 +72,6 @@ void u32_hex_str(char* result, const uint32_t value)
         remaining %= power_of_sixteen[7 - i];
     }
     size_t resulti = 0;
-    if (value < 0)
-        result[resulti++] = '-';
     bool hasdigit = false;
     for (int i = 0; i < 8; i++) {
         if (!(digits[i] == 0 && !hasdigit)) {
