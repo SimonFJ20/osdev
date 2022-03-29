@@ -1,9 +1,13 @@
-#ifndef TERMINAL_H
-#define TERMINAL_H
+#ifndef KERNEL_H
+#define KERNEL_H
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+
+#include "util.h"
+
+void kpanic();
 
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
@@ -54,5 +58,30 @@ void term_write(struct term* t, const char* str, size_t len);
 void term_writestr(struct term* t, const char* str);
 void term_writeint(struct term* t, int32_t value);
 void term_writehex(struct term* t, uint32_t value);
+
+char port_in(uint16_t port);
+void port_out(uint16_t port, uint8_t data);
+
+#define IDT_SIZE 256
+
+struct IDTEntry {
+    uint16_t offset_lowerbits;
+    uint16_t selector;
+    uint8_t zero;
+    uint8_t type_attr;
+    uint16_t offset_higherbits;
+};
+
+void idt_init(struct IDTEntry* idt);
+
+struct KBEventHandlerArgs {};
+
+struct KBEventHandler {
+    void (*handler)(char keycode, struct KBEventHandlerArgs* args);
+    struct KBEventHandlerArgs args;
+};
+
+void kb_init(struct KBEventHandler* handler);
+void kb_event_interrupt_handler();
 
 #endif

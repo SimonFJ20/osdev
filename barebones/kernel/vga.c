@@ -1,6 +1,7 @@
-#include "vga.h"
-#include "util.h"
 #include <stdint.h>
+
+#include "kernel.h"
+#include "util.h"
 
 void term_init(struct term* t)
 {

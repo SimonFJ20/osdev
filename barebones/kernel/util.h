@@ -1,7 +1,6 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include "vga.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>

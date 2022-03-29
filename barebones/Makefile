@@ -13,12 +13,14 @@ os.iso: kernel.bin
 	cp grub.cfg target/boot/grub/grub.cfg
 	grub-mkrescue -o $@ target
 
-KERNEL_CFLAGS=-Ikernel -O2 -Wall -Wextra -ffreestanding
+KERNEL_CFLAGS=-Ikernel -O2 -Wall -Wextra -ffreestanding -DSHOULD_COMPLAIN_ABOUT_WRONG_COMPILER=1 
 KERNEL_LFLAGS=-nostdlib -lgcc
 
 KERNEL_OBJS=kernel/kernel.o \
 			kernel/util.o \
-			kernel/vga.o
+			kernel/vga.o \
+			kernel/interrupts.o \
+			kernel/kpanic.o \
 
 kernel.bin: boot.o linker.ld $(KERNEL_OBJS)
 	i686-elf-gcc -T linker.ld -o $@ boot.o $(KERNEL_OBJS) $(KERNEL_LFLAGS) $(KERNEL_CFLAGS)
