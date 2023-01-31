@@ -98,8 +98,7 @@ impl VGA {
                 let current_index = w + h * VGA_WIDTH * 2;
                 let target_index = w + (h - 1) * VGA_WIDTH * 2;
                 unsafe {
-                    *self.buffer.add(target_index) =
-                        *self.buffer.add(current_index);
+                    *self.buffer.add(target_index) = *self.buffer.add(current_index);
                 }
             });
         });

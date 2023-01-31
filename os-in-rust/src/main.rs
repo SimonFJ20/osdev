@@ -4,6 +4,7 @@
 #![feature(lang_items)]
 #![feature(global_asm)]
 #![feature(asm)]
+#![feature(bench_black_box)]
 
 // see https://docs.rust-embedded.org/embedonomicon/smallest-no-std.html
 #[lang = "eh_personality"]
@@ -23,18 +24,20 @@ fn kernel_main() {
     let mut vga = VGA::new();
     vga.disable_cursor();
     let mut keyboard = Keyboard::new();
-    let mut last = [false; KEY_AMOUNT];
+    let mut last = 0;
     loop {
         keyboard.update();
         let state = keyboard.state();
-        state
-            .iter()
-            .zip(last.iter())
-            .enumerate()
-            .filter(|(_, (&current, &last))| current != last && current)
-            .map(|(i, _)| ALPHABET[i])
-            .for_each(|c| vga.put_char(c));
-        last = state;
+        if state != last {
+            for n in 0..28 {
+                let is_set = state & !last & 1 << n != 0;
+                if is_set {
+                    vga.put_char(ALPHABET[n]);
+                }
+            }
+            core::hint::black_box(last);
+            last = state;
+        }
     }
 }
 

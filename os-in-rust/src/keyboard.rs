@@ -1,19 +1,15 @@
-pub const ALPHABET: [u8; KEY_AMOUNT] = [
+pub const ALPHABET: [u8; 28] = [
     b'a', b'b', b'c', b'd', b'e', b'f', b'g', b'h', b'i', b'j', b'k', b'l', b'm', b'n', b'o', b'p',
     b'q', b'r', b's', b't', b'u', b'v', b'w', b'x', b'y', b'z', b'\n', b' ',
 ];
 
 pub struct Keyboard {
-    keys_down: [bool; KEY_AMOUNT],
+    keys_down: u32,
 }
-
-pub const KEY_AMOUNT: usize = 28;
 
 impl Keyboard {
     pub fn new() -> Self {
-        Self {
-            keys_down: [false; KEY_AMOUNT],
-        }
+        Self { keys_down: 0 }
     }
 
     pub fn update(&mut self) {
@@ -26,49 +22,56 @@ impl Keyboard {
             );
         }
         let action = Action::from_qwerty_u8(x);
+        let mut set_bit = |enable: bool, n: usize| {
+            if enable {
+                self.keys_down |= 1 << n;
+            } else {
+                self.keys_down &= !(1 << n);
+            }
+        };
+
         match action {
             Action::Unrecognized => {}
 
-            Action::A(bool) => self.keys_down[0] = bool,
-            Action::B(bool) => self.keys_down[1] = bool,
-            Action::C(bool) => self.keys_down[2] = bool,
-            Action::D(bool) => self.keys_down[3] = bool,
-            Action::E(bool) => self.keys_down[4] = bool,
-            Action::F(bool) => self.keys_down[5] = bool,
-            Action::G(bool) => self.keys_down[6] = bool,
-            Action::H(bool) => self.keys_down[7] = bool,
-            Action::I(bool) => self.keys_down[8] = bool,
-            Action::J(bool) => self.keys_down[9] = bool,
-            Action::K(bool) => self.keys_down[10] = bool,
-            Action::L(bool) => self.keys_down[11] = bool,
-            Action::M(bool) => self.keys_down[12] = bool,
-            Action::N(bool) => self.keys_down[13] = bool,
-            Action::O(bool) => self.keys_down[14] = bool,
-            Action::P(bool) => self.keys_down[15] = bool,
-            Action::Q(bool) => self.keys_down[16] = bool,
-            Action::R(bool) => self.keys_down[17] = bool,
-            Action::S(bool) => self.keys_down[18] = bool,
-            Action::T(bool) => self.keys_down[19] = bool,
-            Action::U(bool) => self.keys_down[20] = bool,
-            Action::V(bool) => self.keys_down[21] = bool,
-            Action::W(bool) => self.keys_down[22] = bool,
-            Action::X(bool) => self.keys_down[23] = bool,
-            Action::Y(bool) => self.keys_down[24] = bool,
-            Action::Z(bool) => self.keys_down[25] = bool,
+            Action::A(bool) => set_bit(bool, 0),
+            Action::B(bool) => set_bit(bool, 1),
+            Action::C(bool) => set_bit(bool, 2),
+            Action::D(bool) => set_bit(bool, 3),
+            Action::E(bool) => set_bit(bool, 4),
+            Action::F(bool) => set_bit(bool, 5),
+            Action::G(bool) => set_bit(bool, 6),
+            Action::H(bool) => set_bit(bool, 7),
+            Action::I(bool) => set_bit(bool, 8),
+            Action::J(bool) => set_bit(bool, 9),
+            Action::K(bool) => set_bit(bool, 10),
+            Action::L(bool) => set_bit(bool, 11),
+            Action::M(bool) => set_bit(bool, 12),
+            Action::N(bool) => set_bit(bool, 13),
+            Action::O(bool) => set_bit(bool, 14),
+            Action::P(bool) => set_bit(bool, 15),
+            Action::Q(bool) => set_bit(bool, 16),
+            Action::R(bool) => set_bit(bool, 17),
+            Action::S(bool) => set_bit(bool, 18),
+            Action::T(bool) => set_bit(bool, 19),
+            Action::U(bool) => set_bit(bool, 20),
+            Action::V(bool) => set_bit(bool, 21),
+            Action::W(bool) => set_bit(bool, 22),
+            Action::X(bool) => set_bit(bool, 23),
+            Action::Y(bool) => set_bit(bool, 24),
+            Action::Z(bool) => set_bit(bool, 25),
+            Action::Backspace(bool) => {}
+            Action::Enter(bool) => set_bit(bool, 26),
+            Action::Space(bool) => set_bit(bool, 27),
 
             Action::Zero(bool) => {}
             Action::One(bool) => {}
             Action::Nine(bool) => {}
 
             Action::Point(bool) => {}
-
-            Action::Backspace(bool) => {}
-            Action::Space(bool) => self.keys_down[27] = bool,
-            Action::Enter(bool) => self.keys_down[26] = bool,
         }
     }
 
-    pub fn state(&self) -> [bool; KEY_AMOUNT] {
+    pub fn state(&self) -> u32 {
         self.keys_down
     }
 }
