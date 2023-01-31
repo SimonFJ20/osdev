@@ -2,6 +2,7 @@
 ASM_SRC = \
 	src/header.asm \
 	src/main.asm \
+	src/main64.asm \
 
 ASM_OBJS = $(patsubst src/%.asm, build/obj/%.o, $(ASM_SRC))
 
