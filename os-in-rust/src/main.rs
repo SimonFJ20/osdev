@@ -29,7 +29,7 @@ fn kernel_main() {
         keyboard.update();
         let state = keyboard.state();
         if state != last {
-            for n in 0..28 {
+            for n in 0..NUM_CHARS {
                 let is_set = state & !last & 1 << n != 0;
                 if is_set {
                     vga.put_char(ALPHABET[n]);

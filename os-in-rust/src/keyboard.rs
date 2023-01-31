@@ -1,10 +1,13 @@
-pub const ALPHABET: [u8; 28] = [
+pub const ALPHABET: [u8; NUM_CHARS] = [
     b'a', b'b', b'c', b'd', b'e', b'f', b'g', b'h', b'i', b'j', b'k', b'l', b'm', b'n', b'o', b'p',
-    b'q', b'r', b's', b't', b'u', b'v', b'w', b'x', b'y', b'z', b'\n', b' ',
+    b'q', b'r', b's', b't', b'u', b'v', b'w', b'x', b'y', b'z', b'1', b'2', b'3', b'4', b'5', b'6',
+    b'7', b'8', b'9', b'0', b'.', b'\n', b' ',
 ];
 
+pub const NUM_CHARS: usize = 39;
+
 pub struct Keyboard {
-    keys_down: u32,
+    keys_down: u64,
 }
 
 impl Keyboard {
@@ -59,19 +62,27 @@ impl Keyboard {
             Action::X(bool) => set_bit(bool, 23),
             Action::Y(bool) => set_bit(bool, 24),
             Action::Z(bool) => set_bit(bool, 25),
+
+            Action::One(bool) => set_bit(bool, 26),
+            Action::Two(bool) => set_bit(bool, 27),
+            Action::Three(bool) => set_bit(bool, 28),
+            Action::Four(bool) => set_bit(bool, 29),
+            Action::Five(bool) => set_bit(bool, 30),
+            Action::Six(bool) => set_bit(bool, 31),
+            Action::Seven(bool) => set_bit(bool, 32),
+            Action::Eight(bool) => set_bit(bool, 33),
+            Action::Nine(bool) => set_bit(bool, 34),
+            Action::Zero(bool) => set_bit(bool, 35),
+            Action::Point(bool) => set_bit(bool, 36),
+
+            Action::Enter(bool) => set_bit(bool, 37),
+            Action::Space(bool) => set_bit(bool, 38),
+
             Action::Backspace(bool) => {}
-            Action::Enter(bool) => set_bit(bool, 26),
-            Action::Space(bool) => set_bit(bool, 27),
-
-            Action::Zero(bool) => {}
-            Action::One(bool) => {}
-            Action::Nine(bool) => {}
-
-            Action::Point(bool) => {}
         }
     }
 
-    pub fn state(&self) -> u32 {
+    pub fn state(&self) -> u64 {
         self.keys_down
     }
 }
@@ -106,9 +117,16 @@ enum Action {
     N(bool),
     M(bool),
 
-    Zero(bool),
     One(bool),
+    Two(bool),
+    Three(bool),
+    Four(bool),
+    Five(bool),
+    Six(bool),
+    Seven(bool),
+    Eight(bool),
     Nine(bool),
+    Zero(bool),
 
     Point(bool),
 
@@ -173,9 +191,35 @@ impl Action {
             0x32 => Action::M(true),
             0xB2 => Action::M(false),
 
-            0x29 => Action::Zero(true),
             0x2 => Action::One(true),
+            0x82 => Action::One(false),
+
+            0x3 => Action::Two(true),
+            0x83 => Action::Two(false),
+
+            0x4 => Action::Three(true),
+            0x84 => Action::Three(false),
+
+            0x5 => Action::Four(true),
+            0x85 => Action::Four(false),
+
+            0x6 => Action::Five(true),
+            0x86 => Action::Five(false),
+
+            0x7 => Action::Six(true),
+            0x87 => Action::Six(false),
+
+            0x8 => Action::Seven(true),
+            0x88 => Action::Seven(false),
+
+            0x9 => Action::Eight(true),
+            0x89 => Action::Eight(false),
+
             0xA => Action::Nine(true),
+            0x8A => Action::Nine(false),
+
+            0xB => Action::Zero(true),
+            0x8B => Action::Zero(false),
 
             0x34 => Action::Point(true),
             0xB4 => Action::Point(false),
