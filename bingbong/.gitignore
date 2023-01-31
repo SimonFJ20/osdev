@@ -1,0 +1,4 @@
+
+build/
+dist/
+iso/boot/kernel.bin
