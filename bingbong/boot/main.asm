@@ -111,12 +111,12 @@ enable_paging:
     ret
 
 error:
-    .video_memory: equ 0xb8000
+    .video_buffer: equ 0xb8000
 
-    mov dword [.video_memory], 0x4f524f45
-    mov dword [.video_memory + 0x4], 0x4f3a4f52
-    mov dword [.video_memory + 0x8], 0x4f204f20
-    mov byte [.video_memory + 0xa], al
+    mov dword [.video_buffer], 0x4f524f45
+    mov dword [.video_buffer + 4], 0x4f3a4f52
+    mov dword [.video_buffer + 8], 0x4f204f20
+    mov byte [.video_buffer + 10], al
     hlt
 
 section .bss
