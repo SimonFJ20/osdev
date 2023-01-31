@@ -1,11 +1,11 @@
 
 extern kmain
-global long_mode_start
+global start64
 
 section .text
 bits 64
 
-long_mode_start:
+start64:
     mov ax, 0
     mov ss, ax
     mov ds, ax
@@ -14,4 +14,8 @@ long_mode_start:
     mov gs, ax
 
     call kmain
+
+    cli
+.halt:
     hlt
+    jmp .halt

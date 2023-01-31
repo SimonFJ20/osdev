@@ -1,8 +1,8 @@
 
 BOOT_ASM_SRC_FILES = \
 	header.asm \
-	main.asm \
-	main64.asm \
+	start.asm \
+	start64.asm \
 
 BOOT_ASM_SRC_DIR = boot
 BOOT_ASM_OBJ_DIR = build/boot
@@ -11,7 +11,7 @@ BOOT_ASM_OBJS = $(patsubst $(BOOT_ASM_SRC_DIR)/%.asm, $(BOOT_ASM_OBJ_DIR)/%.o, $
 
 KERNEL_C_SRC_FILES = \
 	main.c \
-	print.c \
+	vga.c \
 
 KERNEL_C_SRC_DIR = kernel
 KERNEL_C_OBJ_DIR = build/kernel
@@ -20,15 +20,25 @@ KERNEL_C_OBJS = $(patsubst $(KERNEL_C_SRC_DIR)/%.c, $(KERNEL_C_OBJ_DIR)/%.o, $(K
 
 OBJS = $(BOOT_ASM_OBJS) $(KERNEL_C_OBJS)
 
+LINKER_SCRIPT = linker.ld
+
+KERNEL_BIN = dist/kernel.bin
+KERNEL_ISO = dist/kernel.iso
+
+C_FLAGS = -masm=intel -std=c17 -Wall -Wextra -Wpedantic -Wconversion -Wshadow
+C_DEV_FLAGS = $(C_FLAGS) -xc -Wno-empty-translation-unit
+
 all: build
+
+devenv: compile_flags.txt
 
 build: $(OBJS)
 	mkdir -p dist/
-	x86_64-elf-ld -n -o dist/kernel.bin -T linker.ld $(OBJS)
+	x86_64-elf-ld -n -o $(KERNEL_BIN) -T $(LINKER_SCRIPT) $(OBJS)
 
 	cp -r iso build/
-	cp dist/kernel.bin build/iso/boot/
-	grub-mkrescue /usr/lib/grub/i386-pc -o dist/kernel.iso build/iso
+	cp $(KERNEL_BIN) build/iso/boot/
+	grub-mkrescue /usr/lib/grub/i386-pc -o $(KERNEL_ISO) build/iso
 
 $(BOOT_ASM_OBJS): $(BOOT_ASM_OBJ_DIR)/%.o : $(BOOT_ASM_SRC_DIR)/%.asm
 	mkdir -p $(dir $@)
@@ -36,7 +46,10 @@ $(BOOT_ASM_OBJS): $(BOOT_ASM_OBJ_DIR)/%.o : $(BOOT_ASM_SRC_DIR)/%.asm
 
 $(KERNEL_C_OBJS): $(KERNEL_C_OBJ_DIR)/%.o : $(KERNEL_C_SRC_DIR)/%.c
 	mkdir -p $(dir $@)
-	x86_64-elf-gcc -c -ffreestanding $(patsubst $(KERNEL_C_OBJ_DIR)/%.o, $(KERNEL_C_SRC_DIR)/%.c, $@) -o $@
+	x86_64-elf-gcc -c -ffreestanding $(patsubst $(KERNEL_C_OBJ_DIR)/%.o, $(KERNEL_C_SRC_DIR)/%.c, $@) -o $@ -masm=intel
+
+compile_flags.txt:
+	echo -xc++ $(C_DEV_FLAGS) | sed 's/\s\+/\n/g' > compile_flags.txt
 
 .PHONY: clean
 

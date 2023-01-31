@@ -22,8 +22,9 @@ enum {
 };
 typedef u8 Color;
 
-void print_clear();
-void print_linefeed();
-void print_char(char value);
-void print_string(const char* value);
-void print_set_color(Color foreground, Color background);
+void vga_clear(void);
+void vga_linefeed(void);
+void vga_put_char(char value);
+void vga_put_string(const char* value);
+void vga_set_color(Color foreground, Color background);
+void vga_set_position(usize row, usize column);

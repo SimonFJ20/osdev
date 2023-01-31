@@ -1,6 +1,6 @@
 
 global start
-extern long_mode_start
+extern start64
 
 section .text
 bits 32
@@ -16,7 +16,7 @@ start:
     call enable_paging
 
     lgdt [gdt64.pointer]
-    jmp gdt64.code_segment: long_mode_start
+    jmp gdt64.code_segment: start64
 
 assert_multiboot:
     multiboot_indicator equ 0x36d76289
