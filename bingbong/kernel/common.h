@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 typedef signed char i8;
 typedef signed short int i16;
 typedef signed int i32;
