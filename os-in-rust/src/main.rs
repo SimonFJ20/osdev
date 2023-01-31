@@ -13,6 +13,7 @@ use core::panic::PanicInfo;
 use core::sync::atomic;
 use core::sync::atomic::Ordering;
 
+mod keymap;
 mod vga;
 
 global_asm!(include_str!("boot.s"));
@@ -22,14 +23,17 @@ fn kernel_main() {
     use vga::*;
     let mut vga = VGA::new();
     vga.disable_cursor();
-    vga.set_background_color(Color::Red);
-    vga.put_string(b"abcd");
-    vga.set_background_color(Color::Cyan);
-    vga.put_string(b"abcd");
-    vga.set_foreground_color(Color::Green);
-    vga.put_string(b"abcd");
-    vga.set_foreground_color(Color::Magenta);
-    vga.put_string(b"abcd");
+    let mut last = b'x';
+    loop {
+        let mut x;
+        unsafe {
+            asm!("in {}, 0x60", out(reg_byte) x);
+        }
+        if last != x {
+            vga.put_char(x);
+            last = x;
+        }
+    }
 }
 
 #[inline(never)]

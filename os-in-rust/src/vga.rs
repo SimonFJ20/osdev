@@ -38,7 +38,7 @@ impl VGA {
             row: 0,
             column: 0,
             buffer: vga_buffer,
-            color: 0,
+            color: Color::White as u8,
         }
     }
     pub fn set_cursor_position(&mut self, row: usize, column: usize) {
@@ -87,8 +87,12 @@ impl VGA {
             self.row = 0;
             self.column += 1;
         }
+        if self.column >= VGA_HEIGHT {
+            self.column = VGA_HEIGHT - 1;
+            self.scroll();
+        }
     }
-    pub fn scroll(&mut self) {
+    fn scroll(&mut self) {
         (1..VGA_HEIGHT).for_each(|h| {
             (0..VGA_WIDTH * 2).for_each(|w| {
                 let current_index = w + h * VGA_WIDTH * 2;
@@ -98,6 +102,13 @@ impl VGA {
                         *self.buffer.offset(current_index as isize);
                 }
             });
+        });
+        (0..VGA_WIDTH * 2).for_each(|width| {
+            let height = VGA_HEIGHT - 1;
+            let current_index = width + height * VGA_WIDTH * 2;
+            unsafe {
+                *self.buffer.offset(current_index as isize) = 0;
+            }
         });
     }
 }
