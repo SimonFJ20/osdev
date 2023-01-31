@@ -26,7 +26,7 @@ pub enum Color {
 pub struct VGA {
     row: usize,
     column: usize,
-    color: Color,
+    color: u8,
     buffer: *mut u8,
 }
 
@@ -38,15 +38,20 @@ impl VGA {
             row: 0,
             column: 0,
             buffer: vga_buffer,
-            color: Color::White,
+            color: 0,
         }
     }
     pub fn set_cursor_position(&mut self, row: usize, column: usize) {
         self.row = row;
         self.column = column;
     }
-    pub fn set_color(&mut self, input: Color) {
-        self.color = input;
+    pub fn set_background_color(&mut self, input: Color) {
+        self.color &= 0b0000_1111;
+        self.color |= (input as u8) << 4;
+    }
+    pub fn set_foreground_color(&mut self, input: Color) {
+        self.color &= 0b1111_0000;
+        self.color |= input as u8;
     }
     pub fn put_char(&mut self, input: u8) {
         if input == b'\n' {
