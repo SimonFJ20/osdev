@@ -11,7 +11,7 @@ $(ASM_OBJS): build/obj/%.o : src/%.asm
 	mkdir -p $(dir $@)
 	nasm -f elf64 $(patsubst build/obj/%.o, src/%.asm, $@) -o $@
 
-.PHONY: build run
+.PHONY: build clean
 
 build: $(ASM_OBJS)
 	mkdir -p dist/
@@ -20,3 +20,6 @@ build: $(ASM_OBJS)
 	cp -r iso build/
 	cp dist/kernel.bin build/iso/boot/
 	grub-mkrescue /usr/lib/grub/i386-pc -o dist/kernel.iso build/iso
+
+clean:
+	rm -rf build/ dist/
