@@ -10,29 +10,31 @@
 extern "C" fn eh_personality() {}
 
 use core::panic::PanicInfo;
-use core::sync::atomic;
-use core::sync::atomic::Ordering;
 
-mod keymap;
+mod keyboard;
 mod vga;
 
 global_asm!(include_str!("boot.s"));
 
 #[no_mangle]
 fn kernel_main() {
+    use keyboard::*;
     use vga::*;
     let mut vga = VGA::new();
     vga.disable_cursor();
-    let mut last = b'x';
+    let mut keyboard = Keyboard::new();
+    let mut last = [false; KEY_AMOUNT];
     loop {
-        let mut x;
-        unsafe {
-            asm!("in {}, 0x60", out(reg_byte) x);
-        }
-        if last != x {
-            vga.put_char(x);
-            last = x;
-        }
+        keyboard.update();
+        let state = keyboard.state();
+        state
+            .iter()
+            .zip(last.iter())
+            .enumerate()
+            .filter(|(_, (&current, &last))| current != last && current)
+            .map(|(i, _)| ALPHABET[i])
+            .for_each(|c| vga.put_char(c));
+        last = state;
     }
 }
 
@@ -40,6 +42,9 @@ fn kernel_main() {
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     loop {
-        atomic::compiler_fence(Ordering::SeqCst);
+        use vga::*;
+        let mut vga = VGA::new();
+        vga.set_cursor_position(0, VGA_HEIGHT - 1);
+        vga.put_string(b"error");
     }
 }

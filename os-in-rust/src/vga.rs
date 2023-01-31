@@ -62,7 +62,7 @@ impl VGA {
         let index = self.row + self.column * VGA_WIDTH;
         unsafe {
             *self.buffer.offset(index as isize * 2) = input;
-            *self.buffer.offset(index as isize * 2 + 1) = self.color.clone() as u8;
+            *self.buffer.offset(index as isize * 2 + 1) = self.color as u8;
         }
         self.step();
     }
@@ -98,8 +98,8 @@ impl VGA {
                 let current_index = w + h * VGA_WIDTH * 2;
                 let target_index = w + (h - 1) * VGA_WIDTH * 2;
                 unsafe {
-                    *self.buffer.offset(target_index as isize) =
-                        *self.buffer.offset(current_index as isize);
+                    *self.buffer.add(target_index) =
+                        *self.buffer.add(current_index);
                 }
             });
         });
@@ -107,7 +107,7 @@ impl VGA {
             let height = VGA_HEIGHT - 1;
             let current_index = width + height * VGA_WIDTH * 2;
             unsafe {
-                *self.buffer.offset(current_index as isize) = 0;
+                *self.buffer.add(current_index) = 0;
             }
         });
     }
