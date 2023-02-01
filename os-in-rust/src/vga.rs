@@ -66,6 +66,9 @@ impl VGA {
         }
         self.step();
     }
+    pub fn buffer(&self) -> *mut u8 {
+        self.buffer
+    }
     pub fn disable_cursor(&mut self) {
         unsafe {
             asm!(
@@ -80,6 +83,18 @@ impl VGA {
     }
     pub fn put_string(&mut self, input: &[u8]) {
         input.iter().for_each(|c| self.put_char(*c));
+    }
+    pub fn delete_char(&mut self) {
+        self.step_back();
+        self.put_char(b' ');
+        self.step_back();
+    }
+    fn step_back(&mut self) {
+        if self.row == 0 {
+            self.row = VGA_WIDTH;
+            self.column -= 1;
+        }
+        self.row -= 1;
     }
     fn step(&mut self) {
         self.row += 1;

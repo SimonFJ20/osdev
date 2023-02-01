@@ -5,6 +5,7 @@ pub const ALPHABET: [u8; NUM_CHARS] = [
 ];
 
 pub const NUM_CHARS: usize = 39;
+pub const BACKSPACE_BIT: usize = 39;
 
 pub struct Keyboard {
     keys_down: u64,
@@ -78,7 +79,7 @@ impl Keyboard {
             Action::Enter(bool) => set_bit(bool, 37),
             Action::Space(bool) => set_bit(bool, 38),
 
-            Action::Backspace(bool) => {}
+            Action::Backspace(bool) => set_bit(bool, 39),
         }
     }
 
@@ -137,99 +138,61 @@ enum Action {
 
 impl Action {
     pub fn from_qwerty_u8(byte: u8) -> Self {
+        let is_pressed = byte & 1 << 7 != 0;
+        let byte = byte & !(1 << 7);
         match byte {
-            0x10 => Action::Q(true),
-            0x90 => Action::Q(false),
-            0x11 => Action::W(true),
-            0x91 => Action::W(false),
-            0x12 => Action::E(true),
-            0x92 => Action::E(false),
-            0x13 => Action::R(true),
-            0x93 => Action::R(false),
-            0x14 => Action::T(true),
-            0x94 => Action::T(false),
-            0x15 => Action::Y(true),
-            0x95 => Action::Y(false),
-            0x16 => Action::U(true),
-            0x96 => Action::U(false),
-            0x17 => Action::I(true),
-            0x97 => Action::I(false),
-            0x18 => Action::O(true),
-            0x98 => Action::O(false),
-            0x19 => Action::P(true),
-            0x99 => Action::P(false),
-            0x1E => Action::A(true),
-            0x9E => Action::A(false),
-            0x1F => Action::S(true),
-            0x9F => Action::S(false),
-            0x20 => Action::D(true),
-            0xA0 => Action::D(false),
-            0x21 => Action::F(true),
-            0xA1 => Action::F(false),
-            0x22 => Action::G(true),
-            0xA2 => Action::G(false),
-            0x23 => Action::H(true),
-            0xA3 => Action::H(false),
-            0x24 => Action::J(true),
-            0xA4 => Action::J(false),
-            0x25 => Action::K(true),
-            0xA5 => Action::K(false),
-            0x26 => Action::L(true),
-            0xA6 => Action::L(false),
-            0x2C => Action::Z(true),
-            0xAC => Action::Z(false),
-            0x2D => Action::X(true),
-            0xAD => Action::X(false),
-            0x2E => Action::C(true),
-            0xAE => Action::C(false),
-            0x2F => Action::V(true),
-            0xAF => Action::V(false),
-            0x30 => Action::B(true),
-            0xB0 => Action::B(false),
-            0x31 => Action::N(true),
-            0xB1 => Action::N(false),
-            0x32 => Action::M(true),
-            0xB2 => Action::M(false),
+            0x10 => Action::Q(is_pressed),
+            0x11 => Action::W(is_pressed),
+            0x12 => Action::E(is_pressed),
+            0x13 => Action::R(is_pressed),
+            0x14 => Action::T(is_pressed),
+            0x15 => Action::Y(is_pressed),
+            0x16 => Action::U(is_pressed),
+            0x17 => Action::I(is_pressed),
+            0x18 => Action::O(is_pressed),
+            0x19 => Action::P(is_pressed),
+            0x1E => Action::A(is_pressed),
+            0x1F => Action::S(is_pressed),
+            0x20 => Action::D(is_pressed),
+            0x21 => Action::F(is_pressed),
+            0x22 => Action::G(is_pressed),
+            0x23 => Action::H(is_pressed),
+            0x24 => Action::J(is_pressed),
+            0x25 => Action::K(is_pressed),
+            0x26 => Action::L(is_pressed),
+            0x2C => Action::Z(is_pressed),
+            0x2D => Action::X(is_pressed),
+            0x2E => Action::C(is_pressed),
+            0x2F => Action::V(is_pressed),
+            0x30 => Action::B(is_pressed),
+            0x31 => Action::N(is_pressed),
+            0x32 => Action::M(is_pressed),
 
-            0x2 => Action::One(true),
-            0x82 => Action::One(false),
+            0x2 => Action::One(is_pressed),
 
-            0x3 => Action::Two(true),
-            0x83 => Action::Two(false),
+            0x3 => Action::Two(is_pressed),
 
-            0x4 => Action::Three(true),
-            0x84 => Action::Three(false),
+            0x4 => Action::Three(is_pressed),
 
-            0x5 => Action::Four(true),
-            0x85 => Action::Four(false),
+            0x5 => Action::Four(is_pressed),
 
-            0x6 => Action::Five(true),
-            0x86 => Action::Five(false),
+            0x6 => Action::Five(is_pressed),
 
-            0x7 => Action::Six(true),
-            0x87 => Action::Six(false),
+            0x7 => Action::Six(is_pressed),
 
-            0x8 => Action::Seven(true),
-            0x88 => Action::Seven(false),
+            0x8 => Action::Seven(is_pressed),
 
-            0x9 => Action::Eight(true),
-            0x89 => Action::Eight(false),
+            0x9 => Action::Eight(is_pressed),
 
-            0xA => Action::Nine(true),
-            0x8A => Action::Nine(false),
+            0xA => Action::Nine(is_pressed),
 
-            0xB => Action::Zero(true),
-            0x8B => Action::Zero(false),
+            0xB => Action::Zero(is_pressed),
 
-            0x34 => Action::Point(true),
-            0xB4 => Action::Point(false),
+            0x34 => Action::Point(is_pressed),
 
-            0xE => Action::Backspace(true),
-            0x8E => Action::Backspace(false),
-            0x39 => Action::Space(true),
-            0xB9 => Action::Space(false),
-            0x1C => Action::Enter(true),
-            0x9C => Action::Enter(false),
+            0xE => Action::Backspace(is_pressed),
+            0x39 => Action::Space(is_pressed),
+            0x1C => Action::Enter(is_pressed),
 
             _ => Action::Unrecognized,
         }

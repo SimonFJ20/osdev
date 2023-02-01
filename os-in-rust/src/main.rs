@@ -12,6 +12,7 @@ extern "C" fn eh_personality() {}
 
 use core::panic::PanicInfo;
 
+//mod bf;
 mod keyboard;
 mod vga;
 
@@ -19,6 +20,7 @@ global_asm!(include_str!("boot.s"));
 
 #[no_mangle]
 fn kernel_main() {
+    //use bf::*;
     use keyboard::*;
     use vga::*;
     let mut vga = VGA::new();
@@ -35,6 +37,24 @@ fn kernel_main() {
                     vga.put_char(ALPHABET[n]);
                 }
             }
+
+            let is_backspace_set = state & !last & 1 << BACKSPACE_BIT != 0;
+            if is_backspace_set {
+                vga.delete_char();
+            }
+
+            /*
+            let is_run_set = state & !last & 1 << 35 != 0;
+            if is_run_set {
+                let mut context = Context::new();
+                let buffer = unsafe {
+                    core::slice::from_raw_parts(vga.buffer(), VGA_WIDTH * VGA_HEIGHT * 2)
+                };
+                context.generate_bracket_pairs(buffer);
+                context.run(&mut vga, buffer);
+            }
+            */
+
             core::hint::black_box(last);
             last = state;
         }
