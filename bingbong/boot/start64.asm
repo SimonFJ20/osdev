@@ -13,6 +13,7 @@ start64:
     mov fs, ax
     mov gs, ax
 
+    cli
     call kmain
 
     cli

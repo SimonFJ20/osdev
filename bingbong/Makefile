@@ -12,6 +12,7 @@ BOOT_ASM_OBJS = $(patsubst $(BOOT_ASM_SRC_DIR)/%.asm, $(BOOT_ASM_OBJ_DIR)/%.o, $
 KERNEL_C_SRC_FILES = \
 	main.c \
 	vga.c \
+	keyboard.c \
 
 KERNEL_C_SRC_DIR = kernel
 KERNEL_C_OBJ_DIR = build/kernel
@@ -25,7 +26,7 @@ LINKER_SCRIPT = linker.ld
 KERNEL_BIN = dist/kernel.bin
 KERNEL_ISO = dist/kernel.iso
 
-C_FLAGS = -masm=intel -std=c17 -Wall -Wextra -Wpedantic -Wconversion -Wshadow
+C_FLAGS = -masm=intel -std=c17 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -nostdlib
 C_DEV_FLAGS = $(C_FLAGS) -xc -Wno-empty-translation-unit
 
 all: build
