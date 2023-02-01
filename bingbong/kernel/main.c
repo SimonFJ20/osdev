@@ -12,20 +12,13 @@ void kmain(void)
 
     vga_clear();
     vga_set_color(ColorLightGray, ColorBlack);
-    vga_put_string("Hello\n");
     while (true) {
         keyboard_update(&keyboard);
-        if (keyboard_key_has_been_pressed(&keyboard)) {
-            char typed_char = keyboard_active_char(&keyboard);
-            vga_put_char(typed_char);
-            vga_put_string(" has been pressed\n");
-        }
-        if (keyboard_key_has_been_released(&keyboard)) {
-            char typed_char = keyboard_active_char(&keyboard);
-            vga_put_char(typed_char);
-            vga_put_string(" has been released\n");
-        }
-        keyboard_clear_press(&keyboard);
+        for (usize i = 0; i < 64; ++i)
+            vga_put_char(keyboard.keys_pressed[0] & (1 << i) ? '1' : '0');
+        for (usize i = 0; i < 64; ++i)
+            vga_put_char(keyboard.keys_pressed[1] & (1 << i) ? '1' : '0');
+        vga_linefeed();
     }
 }
 
