@@ -4,14 +4,15 @@
 
 typedef struct {
     u64 keys_pressed[2];
-    char last_char;
-    bool pressed;
-    bool checked;
+    bool key_has_been_released;
+    bool key_has_been_pressed;
+    char active_char;
 } Keyboard;
 
 void keyboard_create(Keyboard*);
 void keyboard_update(Keyboard*);
-void keyboard_is_char_pressed(Keyboard*, char value);
-bool keyboard_press_happened(Keyboard*);
-char keyboard_pressed_char(Keyboard*);
+bool keyboard_is_char_pressed(Keyboard*, char value);
+bool keyboard_key_has_been_released(Keyboard*);
+bool keyboard_key_has_been_pressed(Keyboard*);
+char keyboard_active_char(Keyboard*);
 void keyboard_clear_press(Keyboard*);

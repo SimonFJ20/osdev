@@ -1,5 +1,5 @@
-#include "keyboard.h"
 #include "common.h"
+#include "keyboard.h"
 #include "vga.h"
 
 static const u16 keyboard_data_port = 0x60;
@@ -36,15 +36,15 @@ void keyboard_create(Keyboard* self)
 {
     *self = (Keyboard) {
         .keys_pressed = { 0 },
-        .last_char = '\0',
-        .pressed = false,
-        .checked = false,
+        .key_has_been_released = false,
+        .key_has_been_pressed = false,
+        .active_char = '\0',
     };
 }
 
 char qwerty_key_char_indicator(u8 key)
 {
-    u8 char_indicator = key &= ~(1 << 8);
+    u8 char_indicator = key &= ~(1 << 7);
     // clang-format off
     switch (char_indicator) {
         case 0x2: return '1';  case 0x3: return '2';  case 0x4: return '3';
@@ -60,7 +60,7 @@ char qwerty_key_char_indicator(u8 key)
         case 0x26: return 'l'; case 0x2c: return 'z'; case 0x2d: return 'x';
         case 0x2e: return 'c'; case 0x2f: return 'v'; case 0x30: return 'b';
         case 0x31: return 'n'; case 0x32: return 'm'; case 0x34: return '.';
-        case 0x39: return ' '; default: return '\x00';
+        case 0x39: return ' '; default: return '\0';
     }
     // clang-format on
 }
@@ -71,38 +71,50 @@ void keyboard_update(Keyboard* self)
 {
     u8 key = port_read(keyboard_data_port);
     char char_indicator = qwerty_key_char_indicator(key);
+    if (self->active_char == char_indicator && !self->key_has_been_released) {
+        return;
+    }
+    if (char_indicator != 'c')
+        return;
     bool is_pressed = qwerty_key_is_pressed(key);
+    usize ki = char_indicator >= 64 ? 1 : 0;
+    char ka = char_indicator >= 64 ? (char_indicator - 64) : char_indicator;
+    bool already_pressed = (self->keys_pressed[ki] | 1 << ka) > 0;
     if (is_pressed) {
-        if (char_indicator > 64)
-            self->keys_pressed[1] |= 1 << (char_indicator - 64);
-        else
-            self->keys_pressed[0] |= 1 << char_indicator;
+        self->keys_pressed[ki] |= 1 >> ka;
+        if (!already_pressed) {
+            self->key_has_been_pressed = true;
+            self->active_char = char_indicator;
+        }
     } else {
-        if (char_indicator > 64)
-            self->keys_pressed[1] &= ~(1 << (char_indicator - 64));
-        else
-            self->keys_pressed[0] &= ~(1 << char_indicator);
-    }
-    self->last_char = char_indicator;
-    if (is_pressed && !self->checked) {
-        self->pressed = true;
-    }
-    if (!is_pressed) {
-        self->checked = false;
+        self->keys_pressed[ki] &= ~(1 >> ka);
+        if (already_pressed) {
+            self->key_has_been_released = true;
+            self->active_char = char_indicator;
+        }
     }
 }
 
-void keyboard_is_char_pressed(Keyboard* self, char value) { }
-
-bool keyboard_press_happened(Keyboard* self)
+bool keyboard_is_char_pressed(Keyboard* self, char value)
 {
-    return self->pressed && !self->checked;
+    return value >= 64 ? self->keys_pressed[value - 64]
+                       : self->keys_pressed[value];
 }
 
-char keyboard_pressed_char(Keyboard* self) { return self->last_char; }
+bool keyboard_key_has_been_released(Keyboard* self)
+{
+    return self->key_has_been_released;
+}
+
+bool keyboard_key_has_been_pressed(Keyboard* self)
+{
+    return self->key_has_been_pressed;
+}
+
+char keyboard_active_char(Keyboard* self) { return self->active_char; }
 
 void keyboard_clear_press(Keyboard* self)
 {
-    self->checked = true;
-    self->pressed = false;
+    self->key_has_been_pressed = false;
+    self->key_has_been_released = false;
 }

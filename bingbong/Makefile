@@ -39,7 +39,7 @@ build: $(OBJS)
 
 	cp -r iso build/
 	cp $(KERNEL_BIN) build/iso/boot/
-	grub-mkrescue /usr/lib/grub/i386-pc -o $(KERNEL_ISO) build/iso
+	grub-mkrescue /usr/lib/grub/i386-pc -o $(KERNEL_ISO) build/iso 2> /dev/null
 
 $(BOOT_ASM_OBJS): $(BOOT_ASM_OBJ_DIR)/%.o : $(BOOT_ASM_SRC_DIR)/%.asm
 	mkdir -p $(dir $@)
